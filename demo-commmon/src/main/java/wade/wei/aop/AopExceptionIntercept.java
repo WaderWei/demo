@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import wade.wei.bean.PageResultBean;
 import wade.wei.bean.ResultBean;
+import wade.wei.common.ThreadLocalCommon;
 import wade.wei.enums.CommonEnum;
 import wade.wei.enums.ExceptionEnum;
 import wade.wei.exceptions.KnownException;
@@ -21,9 +22,6 @@ import wade.wei.exceptions.KnownException;
 @Component
 @Slf4j
 public class AopExceptionIntercept {
-    private ThreadLocal<ResultBean<?>> resultBeanThreadLocal = new ThreadLocal<>();
-    private ThreadLocal<PageResultBean<?>> pageResultBeanThreadLocal = new ThreadLocal<>();
-    private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
     @Pointcut("execution(public wade.wei.bean.PageResultBean *(..))")
     public void handlerPageResultBeanMethod() {
@@ -36,27 +34,27 @@ public class AopExceptionIntercept {
 
     @Around(value = "handlerPageResultBeanMethod()")
     public Object handlerPageResultBeanMethod(ProceedingJoinPoint pjp) {
-        startTime.set(System.currentTimeMillis());
+        ThreadLocalCommon.add(System.currentTimeMillis());
         try {
-            pageResultBeanThreadLocal.set((PageResultBean<?>) pjp.proceed());
-            log.info(pjp.getSignature().getName() + "--->方法执行耗时: " + (System.currentTimeMillis() - startTime.get()));
+            ThreadLocalCommon.add((PageResultBean<?>) pjp.proceed());
+            log.info(pjp.getSignature().getName() + "--->方法执行耗时: " + (System.currentTimeMillis() - ThreadLocalCommon.getLong()));
         } catch (Throwable throwable) {
             ResultBean<?> resultBean = handlerException(pjp, throwable);
-            pageResultBeanThreadLocal.set(new PageResultBean<>().setCode(resultBean.getCode()).setMsg(resultBean.getMsg()));
+            ThreadLocalCommon.add(new PageResultBean<>().setCode(resultBean.getCode()).setMsg(resultBean.getMsg()));
         }
-        return pageResultBeanThreadLocal.get();
+        return ThreadLocalCommon.getPageResultBean();
     }
 
     @Around(value = "handlerResultBeanMethod()")
     public Object handlerResultBeanMethod(ProceedingJoinPoint pjp) {
-        startTime.set(System.currentTimeMillis());
+        ThreadLocalCommon.add(System.currentTimeMillis());
         try {
-            resultBeanThreadLocal.set((ResultBean<?>) pjp.proceed());
-            log.info(pjp.getSignature().getName() + "--->方法执行耗时: " + (System.currentTimeMillis() - startTime.get()));
+            ThreadLocalCommon.add((ResultBean<?>) pjp.proceed());
+            log.info(pjp.getSignature().getName() + "--->方法执行耗时: " + (System.currentTimeMillis() - ThreadLocalCommon.getLong()));
         } catch (Throwable throwable) {
-            resultBeanThreadLocal.set(handlerException(pjp, throwable));
+            ThreadLocalCommon.add(handlerException(pjp, throwable));
         }
-        return resultBeanThreadLocal.get();
+        return ThreadLocalCommon.getResultBean();
     }
 
     private ResultBean<?> handlerException(ProceedingJoinPoint pjp, Throwable e) {
