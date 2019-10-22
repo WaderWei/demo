@@ -4,6 +4,12 @@ server:
     context-path: /api
 
 spring:
+  profiles:
+    active: pro
+    logging:
+      level:
+        org.springframework.web: info
+
   datasource:
     dynamic:
       primary: base
