@@ -9,7 +9,6 @@ spring:
     logging:
       level:
         org.springframework.web: info
-
   datasource:
     dynamic:
       primary: base
