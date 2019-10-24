@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 public class TestController {
 
-    @PostMapping("test")
+    @GetMapping("test")
     public ResultBean<String> test(@Validated User user, BindingResult result) {
         return new ResultBean<>()
                 .setCode(CommonEnum.SUCCESS.getCode())
