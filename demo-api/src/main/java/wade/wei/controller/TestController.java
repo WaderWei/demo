@@ -4,12 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wade.wei.bean.ResultBean;
 import wade.wei.enums.CommonEnum;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,8 +26,8 @@ import java.util.List;
 @RestController
 public class TestController {
 
-    @GetMapping("test")
-    public ResultBean<String> test() {
+    @PostMapping("test")
+    public ResultBean<String> test(@Validated User user, BindingResult result) {
         return new ResultBean<>()
                 .setCode(CommonEnum.SUCCESS.getCode())
                 .setMsg("test")
@@ -30,7 +35,7 @@ public class TestController {
     }
 
     @PostMapping("user/login")
-    public ResultBean<User> login(User user) {
+    public ResultBean<User> login(@Valid User user) {
         System.out.println(user);
         HashMap<String, String> token = new HashMap<>();
         token.put("token", "admin-token");
@@ -61,6 +66,8 @@ public class TestController {
 @NoArgsConstructor
 @Accessors(chain = true)
 class User {
+    @NotBlank(message = "用户名不能为空")
+    @Length(min = 3, max = 6)
     private String username;
     private String password;
     private String introduction;

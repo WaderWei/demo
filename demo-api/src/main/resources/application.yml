@@ -5,24 +5,24 @@ server:
 
 spring:
   profiles:
-    active: pro
+    active: dev
     logging:
       level:
-        org.springframework.web: info
+        org.springframework.web: debug
   datasource:
     dynamic:
       primary: base
       datasource:
         base:
           driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-          url: jdbc:p6spy:mysql://localhost:3306/mp?serverTimezone=CTT&useSSL=false&useUnicode=true&characterEncoding=utf8
+          url: jdbc:p6spy:mysql://localhost:3306/sys_base?serverTimezone=CTT&useSSL=false&useUnicode=true&characterEncoding=utf8
           username: root
-          password: 123456
+          password:
         business:
           driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-          url: jdbc:p6spy:mysql://localhost:3306/mp?serverTimezone=CTT&useSSL=false&useUnicode=true&characterEncoding=utf8
+          url: jdbc:p6spy:mysql://localhost:3306/sys_base?serverTimezone=CTT&useSSL=false&useUnicode=true&characterEncoding=utf8
           username: root
-          password: 123456
+          password:
   aop:
     proxy-target-class: true
   servlet:

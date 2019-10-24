@@ -8,7 +8,7 @@
     <contextName>logback</contextName>
 
     <!-- name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义后，可以使“${}”来使用变量。 -->
-    <property name="log.path" value="F:/logs" />
+    <property name="log.path" value="D:/logs" />
 
     <!--0. 日志格式和颜色渲染 -->
     <!-- 彩色日志依赖的渲染类 -->
@@ -22,7 +22,7 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>debug</level>
+            <level>info</level>
         </filter>
         <encoder>
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
@@ -167,7 +167,7 @@
 
     <!-- 4. 最终的策略 -->
     <!-- 4.1 开发环境:打印控制台-->
-    <!--<springProfile name="dev">
+    <springProfile name="dev">
         <logger name="com.sdcm.pmp" level="debug"/>
     </springProfile>
 
@@ -177,16 +177,16 @@
         <appender-ref ref="INFO_FILE" />
         <appender-ref ref="WARN_FILE" />
         <appender-ref ref="ERROR_FILE" />
-    </root>-->
+    </root>
 
     <!-- 4.2 生产环境:输出到文档 -->
-    <springProfile name="pro">
+    <!--<springProfile name="pro">
         <root level="info">
-            <!--<appender-ref ref="CONSOLE" />-->
+            &lt;!&ndash;<appender-ref ref="CONSOLE" />&ndash;&gt;
             <appender-ref ref="DEBUG_FILE" />
             <appender-ref ref="INFO_FILE" />
             <appender-ref ref="ERROR_FILE" />
             <appender-ref ref="WARN_FILE" />
         </root>
-    </springProfile>
+    </springProfile>-->
 </configuration>

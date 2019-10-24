@@ -7,12 +7,17 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import wade.wei.bean.PageResultBean;
 import wade.wei.bean.ResultBean;
 import wade.wei.common.ThreadLocalCommon;
 import wade.wei.enums.CommonEnum;
 import wade.wei.enums.ExceptionEnum;
 import wade.wei.exceptions.KnownException;
+import wade.wei.exceptions.ParamException;
+
+import java.util.Arrays;
 
 /**
  * @author Administrator
@@ -49,6 +54,16 @@ public class AopExceptionIntercept {
     public Object handlerResultBeanMethod(ProceedingJoinPoint pjp) {
         ThreadLocalCommon.add(System.currentTimeMillis());
         try {
+            Object[] args = pjp.getArgs();
+            Arrays.stream(args).forEach(arg -> {
+                if (arg instanceof BindingResult) {
+                    BindingResult br = (BindingResult) arg;
+                    if (br.hasErrors()) {
+                        ObjectError objectError = br.getAllErrors().get(0);
+                        throw new ParamException(ExceptionEnum.PARAM_ERROR.getCode(), objectError.getDefaultMessage());
+                    }
+                }
+            });
             ThreadLocalCommon.add((ResultBean<?>) pjp.proceed());
             log.info(pjp.getSignature().getName() + "--->方法执行耗时: " + (System.currentTimeMillis() - ThreadLocalCommon.getLong()));
         } catch (Throwable throwable) {
@@ -63,6 +78,9 @@ public class AopExceptionIntercept {
         if (e instanceof KnownException) {
             ExceptionEnum exceptionEnum = ((KnownException) e).getExceptionEnum();
             resultBean.setCode(exceptionEnum.getCode()).setMsg(exceptionEnum.getMsg());
+        } else if (e instanceof ParamException) {
+            ParamException paramException = (ParamException) e;
+            resultBean.setCode(paramException.getCode()).setMsg(paramException.getMsg());
         } else {
             //未知异常发生后，要及时通知负责人（邮件）
             CommonEnum unknownFail = CommonEnum.UNKNOWN_FAIL;
