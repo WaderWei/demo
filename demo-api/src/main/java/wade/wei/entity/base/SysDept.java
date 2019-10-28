@@ -1,9 +1,6 @@
 package wade.wei.entity.base;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -37,11 +34,12 @@ public class SysDept {
 
     private String remark;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String operator;
 
-    @TableField("operate_time")
+    @TableField(value = "operate_time", fill = FieldFill.INSERT_UPDATE)
     private Timestamp operateTime;
 
-    @TableField("operate_ip")
+    @TableField(value = "operate_ip", fill = FieldFill.INSERT_UPDATE)
     private String operateIp;
 }

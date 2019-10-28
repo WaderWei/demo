@@ -47,8 +47,8 @@ mybatis:
 mybatis-plus:
   global-config:
     db-config:
-      logic-delete-value: 1
       logic-not-delete-value: 0
+      logic-delete-value: 1
 
 file:
   # 所有通过 REST APIs 上传的文件都将存储在此目录下
@@ -57,7 +57,7 @@ file:
   upload-allow-file-type: txt,dll,jpg
 
 cors:
-  allowed-origins: http://manage.meisu.com,http://mobile.meisu.com,http://192.168.0.120:9901 #允许的源服务
+  allowed-origins: http://manage.meisu.com,http://mobile.meisu.com,http://localhost:9901 #允许的源服务
   max-age: 3600 #预检请求的有效期，单位为秒。
 
 
